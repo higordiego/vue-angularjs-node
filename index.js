@@ -1,11 +1,14 @@
 const express = require('express')
 
+const cors = require('cors')
+
 const mongoose = require('mongoose')
 mongoose.connect('mongodb://localhost:27017/test', { useNewUrlParser: true, useUnifiedTopology: true, useCreateIndex: true })
 
 const app = express()
 
 app.use(express.json())
+app.use(cors())
 
 const Angularjs = mongoose.model('angularjs', {
     name: { type: String, required: true },
@@ -16,8 +19,9 @@ const Angularjs = mongoose.model('angularjs', {
 
 app.post('/', async (req, res) => {
     try {
-        if (req.body) await Angularjs.create(req.body)
-        res.status(201).json()
+        let angular = {}
+        if (req.body) angular = await Angularjs.create(req.body)
+        res.status(201).json(angular)
     } catch (err) {
         res.status(500).json(err.message)
     }
